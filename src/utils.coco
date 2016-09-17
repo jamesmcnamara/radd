@@ -1,0 +1,21 @@
+import os
+import shutil
+
+templates_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../templates')
+
+get_template_path = os.path.join$(templates_dir)
+
+def cleaner(f):
+    def wrapped(name, *args, **kwargs):
+        try:
+            return f(name, *args, **kwargs)
+        except Exception as e:
+            shutil.rmtree(name)
+            raise e
+    return wrapped
+
+def write_template(path, template, context):
+    with open(path, 'w') as f:
+        template |> get_template_path |> open |> ((f) -> f.read().format(**context)) |> f.write 
+
+

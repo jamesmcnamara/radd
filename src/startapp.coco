@@ -1,0 +1,26 @@
+import os
+
+from utils import write_template, cleaner 
+
+@cleaner
+def startapp(name):
+    make_component(name)
+    make_redux(name)
+
+
+def make_component(name):
+    fname = .format(name=name)
+    os.makedirs('./{name}/components' |> fname)
+    write_template('./{name}/components/main.js' |> fname, "redux_component", {"name": name})
+
+
+def make_redux(name):
+    fname = .format(name=name)
+    os.makedirs('./{name}/redux' |> fname)
+    os.makedirs('./{name}/redux/actions' |> fname)
+    os.makedirs('./{name}/redux/reducers' |> fname)
+    write_template('./{name}/redux/reducers/main.js' |> fname, "reducer", {})
+    write_template('./{name}/redux/select.js' |> fname, "select", {"name": name})
+    write_template('./{name}/redux/initialState.js' |> fname, "initialState", {"name": name})
+    write_template('./{name}/redux/actions/main.js' |> fname, "mainAction", {"name": name})
+

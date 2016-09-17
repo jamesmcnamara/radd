@@ -1,0 +1,22 @@
+#! /home/james/.virtualenvs/radd/bin/coconut
+import argparse
+import os
+import shutil
+
+from startapp import startapp
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="CLI tool to template redux projects")
+    parser.add_argument("cmd", type=str, help="command to run. Options are: startapp")
+    parser.add_argument("name", type=str, help="name of the new operation")
+
+    return parser.parse_args()
+
+
+def router(parser):
+    case parser.cmd:
+        match "startapp":
+            startapp(parser.name)
+
+
+parse_args() |> router

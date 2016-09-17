@@ -1,0 +1,7 @@
+import {{ createReducer }} from 'redux-act'
+import initialState from '../initialState'
+import actions from '../actions/main'
+
+export default createReducer({{
+
+}}, initialState)
