@@ -1,0 +1,28 @@
+from utils import write_template, insert_after_last_occurence_of
+
+def new(name):
+    write_template("./redux/actions/%s.js" % name, "action", {})
+    write_template("./redux/reducers/%s.js" % name, "reducer", {})
+    updater = update_includes$(name)
+    updater("./redux/reducers/main.js")
+    updater("./redux/actions/main.js")
+
+def update_includes(name, filename):
+    lines = open(filename).readlines()
+
+    with_import = (lines 
+            |> insert_after_last_occurence_of$(
+                (line) -> "import" in line,
+                "import {name} from './{name}.js'\n".format(name=name)
+                )
+            )
+
+    with_reducer = (with_import 
+            |> insert_after_last_occurence_of$(
+                (line) -> "export default" in line,
+                "    %s,\n" % name
+                )
+            )
+
+    (with_reducer
+            |> open(filename, "w").writelines)

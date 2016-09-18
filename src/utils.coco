@@ -18,4 +18,22 @@ def write_template(path, template, context):
     with open(path, 'w') as f:
         template |> get_template_path |> open |> ((f) -> f.read().format(**context)) |> f.write 
 
+def last_of(pred, lines):
+    def aux(n, (i, line)) = i if pred(line) else n
 
+    return reduce(aux, lines |> enumerate, 0)
+
+
+
+def insert_after(payload, xs, n):
+    def aux((acc, n), line) = ( 
+        acc + [line] + ([payload] if n == 0 else []), n - 1
+        )
+    [acc, _] = reduce(aux, xs, ([], n))
+    return acc
+
+
+def insert_after_last_occurence_of(pred, values, lines) = (
+    lines
+    |> last_of$(pred)
+    |> insert_after$(values, lines))
