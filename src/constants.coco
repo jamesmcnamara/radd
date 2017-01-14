@@ -1,0 +1,4 @@
+ACTION_IMPORT = "import {name} from './{file_path}'\n"
+ACTION_NEW_LINE = "  {name},\n"
+REDUCER_IMPORT = ACTION_IMPORT
+REDUCER_NEW_LINE = "  [actions.{path}]: {reducer},\n"

@@ -1,28 +1,32 @@
-from utils import write_template, insert_after_last_occurence_of
+import os
+from utils import write_template, insert_after_last_occurence_of, update_includes
+from constants import ACTION_IMPORT, ACTION_NEW_LINE, REDUCER_IMPORT, REDUCER_NEW_LINE
 
-def new(name):
-    write_template("./redux/actions/%s.js" % name, "action", {})
-    write_template("./redux/reducers/%s.js" % name, "reducer", {})
-    updater = update_includes$(name)
-    updater("./redux/reducers/main.js")
-    updater("./redux/actions/main.js")
 
-def update_includes(name, filename):
-    lines = open(filename).readlines()
+def new(name, no_action, no_reducer, reducers_file):
+    if "." in name:
+        file_path = os.path.join(*name.split("."))
+        path = name
+        *_, name = name.split(".")
+    else: 
+        path = file_path = name
 
-    with_import = (lines 
-            |> insert_after_last_occurence_of$(
-                (line) -> "import" in line,
-                "import {name} from './{name}.js'\n".format(name=name)
-                )
-            )
+    if not no_action:
+        actions_file = "./redux/actions/%s.js" % file_path
+        "writing actions file to %s" % actions_file  |> print
+        write_template(actions_file, "action", {})
+        "updating includes for actions file" |> print
+        update_includes("./redux/actions/index.js", 
+                ACTION_IMPORT.format(name=name, file_path=file_path),
+                ACTION_NEW_LINE.format(name=name))
 
-    with_reducer = (with_import 
-            |> insert_after_last_occurence_of$(
-                (line) -> "export default" in line,
-                "    %s,\n" % name
-                )
-            )
-
-    (with_reducer
-            |> open(filename, "w").writelines)
+    if not no_reducer:
+       "writing reducers file" |> print
+        write_template("./redux/reducers/%s.js" % file_path, "reducer", {"name": name})
+        "updating includes for reducers index: (%s)" % reducers_file |> print
+        reducer_format_string = "mod('.{path}')({name})" if "." in path else "{name}"
+        *short_path, _ = path.split(".") 
+        reducer = reducer_format_string.format(path=".".join(short_path), name=name)
+        update_includes(reducers_file, 
+                REDUCER_IMPORT.format(name=name, file_path=file_path),
+                REDUCER_NEW_LINE.format(path=path, reducer=reducer))

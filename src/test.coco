@@ -1,0 +1,6 @@
+import os
+from utils import find_path
+
+def test(parser):
+    find_path('batSignal/redux/reducers/main', 'store.flow.js')
+

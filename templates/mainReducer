@@ -1,6 +1,9 @@
+/* @flow */
+
 import {{ createReducer }} from 'redux-act'
-import initialState from '../initialState'
-import actions from '../actions/main'
+import {{ mod }} from 'shades'
+import state from '../state'
+import actions from '../actions'
 
 export default createReducer({{
-}}, initialState)
+}}, state)

@@ -1,9 +1,14 @@
+/* @flow */
+
 import React, {{ Component }} from 'react'
 
-export default class extends Component {{
-    render() {{
-        return (
-            <div />
-        )
-    }}
+type Props = {{
+
+}}
+
+export default function {name}({{}}: Props) {{
+  return (
+    <div>
+    </div>
+  )
 }}

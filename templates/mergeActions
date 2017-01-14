@@ -1,3 +1,5 @@
+/* @flow */
+
 export default (selectProps, dispatchProps, ownProps) => (
-    {{...selectProps, ...ownProps, actions: dispatchProps}}
+  {{...selectProps, ...ownProps, actions: dispatchProps}}
 );

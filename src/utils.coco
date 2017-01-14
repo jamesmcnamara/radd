@@ -15,14 +15,20 @@ def cleaner(f):
     return wrapped
 
 def write_template(path, template, context):
+    if not os.path.exists(os.path.dirname(path)):
+        os.makedirs(os.path.dirname(path))
     with open(path, 'w') as f:
-        template |> get_template_path |> open |> ((f) -> f.read().format(**context)) |> f.write 
+        (template 
+            |> get_template_path 
+            |> open 
+            |> ((t) -> t.read().format(**context))
+            |> f.write)
+
 
 def last_of(pred, lines):
     def aux(n, (i, line)) = i if pred(line) else n
 
     return reduce(aux, lines |> enumerate, 0)
-
 
 
 def insert_after(payload, xs, n):
@@ -37,3 +43,55 @@ def insert_after_last_occurence_of(pred, values, lines) = (
     lines
     |> last_of$(pred)
     |> insert_after$(values, lines))
+
+
+def update_includes(filename, new_import, new_line, pattern="export default"):
+    lines = open(filename).readlines()
+    
+    if map((line) -> new_line in line, lines) |> any:
+        "%s already includes '%s'" % (filename, new_line) |> print
+        return 
+
+    with_import = (lines 
+            |> insert_after_last_occurence_of$(
+                (line) -> "import" in line, new_import)
+            )
+
+    with_new_line = (with_import 
+            |> insert_after_last_occurence_of$(
+                (line) -> pattern in line,
+                new_line)
+                )
+
+    (with_new_line
+            |> open(filename, "w").writelines)
+
+def find_path(from_file, to_file, root="src"):
+    from_dir = os.path.dirname(relative_path(from_file, root))
+    path_to_to_file = relative_path(to_file, root)
+    return os.path.relpath(path_to_to_file, from_dir)
+
+def relative_path(name, root="src"):
+    base = os.path.basename(name)
+    dir = os.path.dirname(name).strip('./')
+
+    for dirpath, dirnames, filenames in os.walk(os.path.join(find_root(root), root)):
+        matching_file = first_matching(filenames, base)
+        if matching_file and dir in dirpath:
+            return os.path.join(dirpath, matching_file)
+
+
+def first_matching(xs, x):
+    for s in xs: 
+        if x in s:
+            return s
+
+
+@recursive
+def find_root(root, path="./") = (
+    path if root in os.listdir(path) else find_root(root, os.path.join("..", path))
+    )
+
+def touch(path):
+    with open(path, 'a'):
+        os.utime(path)

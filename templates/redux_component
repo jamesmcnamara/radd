@@ -1,15 +1,35 @@
+/* @flow */
+
 import React, {{ Component }} from 'react'
 import {{ connect }} from 'react-redux'
 
-import selectProps from '../redux/select'
-import {name}Actions from '../redux/actions/main'
-import mergeActions from 'shared/utils/mergeActions'
+// Components
 
-@connect(selectProps, {name}Actions, mergeActions)
-export default class extends Component {{
-    render() {{
-        return (
-            <div />
-        )
-    }}
+// Redux
+import selectProps from '../redux/select'
+import {name}Actions from '../redux/actions'
+import mergeActions from '{merge_action_path}'
+
+// Types
+import type {{ ${cap_name} }} from '../redux/state'
+
+type Props = {{
+
 }}
+
+export default connect(selectProps, {name}Actions, mergeActions)
+(class {name} extends Component {{
+
+  props: Props
+
+  render() {{
+    const {{
+
+    }} = this.props
+
+    return (
+      <div>
+      </div>
+    )
+  }}
+}})

@@ -5,11 +5,17 @@ import shutil
 
 from startapp import startapp
 from new import new
+from comp import comp
+from test import test
 
 def parse_args():
     parser = argparse.ArgumentParser(description="CLI tool to template redux projects")
-    parser.add_argument("cmd", type=str, help="command to run. Options are: startapp, new")
+    parser.add_argument("cmd", type=str, help="command to run. Options are: startapp, new, comp")
     parser.add_argument("name", type=str, help="name of the new operation")
+
+    parser.add_argument('-na', '--no-action', action='store_true', help="Don't add an action file")
+    parser.add_argument('-nr', '--no-reducer', action='store_true', help="Don't add reducer file")
+    parser.add_argument('-r', '--reducers-file', type=str, help="Custom reducers file", default="./redux/reducers/index.js")
 
     return parser.parse_args()
 
@@ -19,7 +25,10 @@ def router(parser):
         match "startapp":
             startapp(parser.name)
         match "new":
-            new(parser.name)
-
-
+            new(parser.name, parser.no_action, parser.no_reducer, parser.reducers_file)
+        match "comp":
+            comp(parser.name)
+        match "test":
+            test(parser)
+        
 parse_args() |> router
