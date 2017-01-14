@@ -1,0 +1,9 @@
+import os
+
+from utils import templates_dir
+
+
+def get_snippets(template, name, config):
+
+def snippet_list():
+    for file in os.path.listdir(os.path.join(templates_dir, snippets))

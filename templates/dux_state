@@ -1,0 +1,8 @@
+{flow_header}
+{state_type}
+
+const initialState{state_annotation} = {{
+}}
+
+export default {{
+}}

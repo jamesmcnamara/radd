@@ -1,0 +1,9 @@
+{flow_header}
+
+import {{ createReducer }} from 'redux-act'
+import {{ mod }} from 'shades'
+
+import initialState from '../initialState'
+
+export default createReducer({{
+}}, initialState)

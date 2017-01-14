@@ -1,26 +1,25 @@
-{flow_header}
+/* @flow */
 
 import React, {{ Component }} from 'react'
 import {{ connect }} from 'react-redux'
 
 // Components
 
+// Modals
+
 // Redux
-import mapStateToProps from '../state/select'
-import {name}Actions from '../dux/actions'
+import selectProps from '../redux/select'
+import {name}Actions from '../redux/actions'
 import mergeActions from '{merge_action_path}'
 
-{dux_types_import}
-{prop_type}
-
+// Utils
+{types_import}
+{prop_decl}
 export default connect(selectProps, {name}Actions, mergeActions)
-(class {name} extends Component {{
-
-  props: Props
-
+(class {cap_name} extends Component {{
+  {props_annotation}
   render() {{
     const {{
-
     }} = this.props
 
     return (

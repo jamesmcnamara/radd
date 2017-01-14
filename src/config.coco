@@ -1,0 +1,15 @@
+import os
+import json
+
+def find_config_file(file_name, path='.'):
+    file_path = os.path.join(path, file_name)
+    if os.path.exists(file_path):
+        return file_path
+    elif os.path.samefile(path, '/'):
+        raise ValueError('Cannot find {} in current file tree'.format(file_name))
+    else:
+        return find_config_file(os.path.join(path, '..'))
+
+def parse_config(path) = path |> open |> json.load
+
+def get_config(file_name) = find_config_file(file_name) |> parse_config

@@ -1,7 +1,6 @@
 /* @flow */
 
 export type ${cap_name} = {{
-
 }}
 
 export default {{

@@ -1,9 +1,17 @@
 import os
 from utils import write_template, insert_after_last_occurence_of, update_includes
-from constants import ACTION_IMPORT, ACTION_NEW_LINE, REDUCER_IMPORT, REDUCER_NEW_LINE
+from constants import DUX_TEMPLATE
+
+def new(name, config):
+    if "." in name:
+        submod_create(name, config)
+    dux_file = '/state/dux/%s.js' % name
+    values = get_snippets(DUX_TEMPLATE, name, config)
+    values['name'] = name
+    write_template(dux_file, DUX_TEMPLATE, values)  
 
 
-def new(name, no_action, no_reducer, reducers_file):
+def new(name, no_action, no_reducer, reducers_file, config):
     if "." in name:
         file_path = os.path.join(*name.split("."))
         path = name

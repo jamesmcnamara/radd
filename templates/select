@@ -1,8 +1,4 @@
-/* @flow */
-
-import type {{ $Store }} from '{store_type_path}'
-
-
-export default ({{{name}}}: $Store) => ({{
+{flow_head}
+export default ({{{name}}}{flow_store_header}) => ({{
   ...{name},
 }})
