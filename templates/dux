@@ -1,6 +1,9 @@
 {s_flow_header}
 import {{ createAction }} from 'redux-act'
-{s_types_import}
+{s_flow_dux_types_import}
+
+// Actions
 export const {name} = createAction()
 
-export default (state{s_type_param}) => {{state}}
+// Reducer
+export default (state{s_flow_module_type_param}) => {{state}}

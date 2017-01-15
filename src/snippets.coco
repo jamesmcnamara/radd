@@ -1,9 +1,34 @@
 import os
 
-from utils import templates_dir
+from utils import templates_dir, get_template_text
+
+def get_snippet_text(snippet) = os.path.join(templates_dir, 'snippets', snippet).read()
+
+def get_snippets_for_template(template, name, values, config):
+    template_text =  get_template_text(template)
+    for snippet in snippet_list():
+        if snippet in template_text:
+            for processor in get_processors():
+                match processor(snippet_name, values, config):
+                    case True, text:
+                        values[snippet_name] = text
+                        break
 
 
-def get_snippets(template, name, config):
 
-def snippet_list():
-    for file in os.path.listdir(os.path.join(templates_dir, snippets))
+def get_processors(processors = []) = processors
+
+def register_processor(processor):
+    get_processors().append(processor)
+    return processor
+
+
+
+def snippet_list() = os.path.join(templates_dir, 'snippets') |> os.path.listdir
+
+@register_processor
+def flow_filter_processor(snippet_name, values, config): 
+    'flow' not in snippet_name and config['flow'], ''
+
+@register_processor
+def default_processor(snippet_name, values, config) = True, get_snippet_text(snippet_name).format(**values)

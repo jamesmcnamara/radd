@@ -9,13 +9,14 @@ from comp import comp
 from test import test
 from config import get_config
 from constants import CONFIG_NAME
+from utils import get_values_dict
 
 def parse_args():
     parser = argparse.ArgumentParser(description="CLI tool to template redux projects")
     parser.add_argument("cmd", type=str, help="command to run. Options are: startapp, new, comp")
     parser.add_argument("name", type=get_config, help="name of the new operation")
     parser.add_argument('-c', '--config-file', type=str, default=CONFIG_NAME, help='Path to config file. Default {}'.format(CONFIG_NAME))
-
+    parser.add_argument('-m', '--module-name', type=str, default=None, help="The module that this dux will be part of")
 
     return parser.parse_args()
 
@@ -25,7 +26,7 @@ def router(parser):
         match "startapp":
             startapp(parser.name)
         match "new":
-            new(parser.name, parser.config)
+            new(get_values_dict(parser), parser.config)
         match "comp":
             comp(parser.name)
         match "test":

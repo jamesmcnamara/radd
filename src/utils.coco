@@ -14,6 +14,8 @@ def cleaner(f):
             raise e
     return wrapped
 
+def get_template_text(template) = open(get_template_path(template)).read()
+
 def write_template(path, template, context):
     if not os.path.exists(os.path.dirname(path)):
         os.makedirs(os.path.dirname(path))
@@ -66,6 +68,11 @@ def update_includes(filename, new_import, new_line, pattern="export default"):
     (with_new_line
             |> open(filename, "w").writelines)
 
+
+def update_actions_imports(main_file, name, new_file_path):
+     
+
+
 def find_path(from_file, to_file, root="src"):
     from_dir = os.path.dirname(relative_path(from_file, root))
     path_to_to_file = relative_path(to_file, root)
@@ -95,3 +102,21 @@ def find_root(root, path="./") = (
 def touch(path):
     with open(path, 'a'):
         os.utime(path)
+
+def get_dux_file_path(name) = name.replace(".", "/")
+
+def get_module_name(parser):
+    if parser.module_name:
+        return parer.module_name
+    else:
+        return input("What module will this be part of?")
+
+def get_values_dict(parser):
+    values = {}
+    values["name"] = parser.name
+    values["new_dux_file_path"] = get_dux_file_path(parser.name)
+    values["store_type_path"] = parser.config.get("store_flow_file", "store/types.js")
+    values["cap_name"] = parser.name[0].capitalize() + parser.name[1:]
+    values["module_name"] = get_module_name(parser)
+    values["module_type"] = "$" + values["module_name"]
+    return parser

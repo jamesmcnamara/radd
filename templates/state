@@ -1,4 +1,4 @@
-/* @flow */
+{s_flow_header}
 
 export type ${cap_name} = {{
 }}

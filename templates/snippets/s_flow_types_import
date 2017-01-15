@@ -1,0 +1,5 @@
+
+// Types
+import type {{ ${cap_name} }} from '../state/initialState'
+import type {{ ${cap_name}Actions }} from '../state/dux/actions'
+

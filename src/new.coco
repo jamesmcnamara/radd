@@ -1,14 +1,16 @@
 import os
-from utils import write_template, insert_after_last_occurence_of, update_includes
 from constants import DUX_TEMPLATE
+from snippets import fill_snippets_for_template
+from utils import write_template, insert_after_last_occurence_of
 
-def new(name, config):
+def new(values, config):
+    name = values["name"]
     if "." in name:
-        submod_create(name, config)
+        submod_create(, config)
     dux_file = '/state/dux/%s.js' % name
-    values = get_snippets(DUX_TEMPLATE, name, config)
-    values['name'] = name
+    fill_snippets_for_template(DUX_TEMPLATE, name, config)
     write_template(dux_file, DUX_TEMPLATE, values)  
+    update_includes(
 
 
 def new(name, no_action, no_reducer, reducers_file, config):

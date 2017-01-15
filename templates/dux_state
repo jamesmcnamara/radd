@@ -1,7 +1,7 @@
-{flow_header}
-{state_type}
+{s_flow_header}
+{s_flow_state_type}
 
-const initialState{state_annotation} = {{
+const initialState{s_flow_state_annotation} = {{
 }}
 
 export default {{

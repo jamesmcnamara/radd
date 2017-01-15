@@ -1,0 +1,4 @@
+
+// Types
+import type {{ ${cap_name} }} from '../initialState'
+

@@ -1,4 +1,4 @@
-{flow_head}
-export default ({{{name}}}{flow_store_header}) => ({{
+{s_flow_header}
+export default ({{{name}}}{s_flow_store_annotation}) => ({{
   ...{name},
 }})

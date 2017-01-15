@@ -1,2 +1,0 @@
-// Types
-import type {{ ${cap_name} }} from '{state_path}'
