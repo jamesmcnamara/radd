@@ -1,1 +1,2 @@
-import {name} from './{new_dux_file_path}'
+import {name} from './{name}'
+

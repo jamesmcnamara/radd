@@ -1,6 +1,7 @@
 from utils import write_template 
 
-def comp(name):
+def comp(values, config):
+    name = values["name"]
     "creating %s" % name |> print
 
-    write_template('./%s.js' % name, 'component', {"name": name, "cap_name": name.capitalize()})
+    write_template('./%s.js' % name, 'component', values, config)

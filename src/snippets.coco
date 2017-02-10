@@ -1,34 +1,53 @@
 import os
 
-from utils import templates_dir, get_template_text
+import utils
 
-def get_snippet_text(snippet) = os.path.join(templates_dir, 'snippets', snippet).read()
+
+def get_snippet_text(snippet) = open(os.path.join(utils.templates_dir, 'snippets', snippet)).read()[:-1]
+
+
+def contained_snippets(text) = (
+    [snippet for snippet in snippet_list() if snippet in text]
+    )
+    
 
 def get_snippets_for_template(template, name, values, config):
-    template_text =  get_template_text(template)
-    for snippet in snippet_list():
-        if snippet in template_text:
-            for processor in get_processors():
-                match processor(snippet_name, values, config):
-                    case True, text:
-                        values[snippet_name] = text
-                        break
+    template_text = utils.get_template_text(template)
+    values = values.copy()
+    template_snippets(template_text, values, config)
+    return values
 
+
+def template_snippets(text, values, config):
+    for snippet_name in contained_snippets(text):
+        values[snippet_name] = get_snippet(snippet_name, values, config)
+
+
+def get_snippet(snippet_name, values, config):
+    for processor in get_processors():
+        case processor(snippet_name, values, config):
+            match (True, text):
+                return text
 
 
 def get_processors(processors = []) = processors
+
 
 def register_processor(processor):
     get_processors().append(processor)
     return processor
 
 
-
-def snippet_list() = os.path.join(templates_dir, 'snippets') |> os.path.listdir
-
-@register_processor
-def flow_filter_processor(snippet_name, values, config): 
-    'flow' not in snippet_name and config['flow'], ''
+def snippet_list() = os.path.join(utils.templates_dir, 'snippets') |> os.listdir
 
 @register_processor
-def default_processor(snippet_name, values, config) = True, get_snippet_text(snippet_name).format(**values)
+def flow_filter_processor(snippet_name, values, config) = ( 
+    'flow' in snippet_name and not config['flow'], ''
+    )
+
+@register_processor
+def default_processor(snippet_name, values, config):
+    text = get_snippet_text(snippet_name)
+    if contained_snippets(text):
+        template_snippets(text, values, config)
+    return True, text.format(**values)

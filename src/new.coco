@@ -1,42 +1,13 @@
 import os
 from constants import DUX_TEMPLATE
-from snippets import fill_snippets_for_template
-from utils import write_template, insert_after_last_occurence_of
+from snippets import get_snippets_for_template
+from utils import write_template, update_dux_imports
 
 def new(values, config):
     name = values["name"]
     if "." in name:
-        submod_create(, config)
-    dux_file = '/state/dux/%s.js' % name
-    fill_snippets_for_template(DUX_TEMPLATE, name, config)
-    write_template(dux_file, DUX_TEMPLATE, values)  
-    update_includes(
-
-
-def new(name, no_action, no_reducer, reducers_file, config):
-    if "." in name:
-        file_path = os.path.join(*name.split("."))
-        path = name
-        *_, name = name.split(".")
-    else: 
-        path = file_path = name
-
-    if not no_action:
-        actions_file = "./redux/actions/%s.js" % file_path
-        "writing actions file to %s" % actions_file  |> print
-        write_template(actions_file, "action", {})
-        "updating includes for actions file" |> print
-        update_includes("./redux/actions/index.js", 
-                ACTION_IMPORT.format(name=name, file_path=file_path),
-                ACTION_NEW_LINE.format(name=name))
-
-    if not no_reducer:
-       "writing reducers file" |> print
-        write_template("./redux/reducers/%s.js" % file_path, "reducer", {"name": name})
-        "updating includes for reducers index: (%s)" % reducers_file |> print
-        reducer_format_string = "mod('.{path}')({name})" if "." in path else "{name}"
-        *short_path, _ = path.split(".") 
-        reducer = reducer_format_string.format(path=".".join(short_path), name=name)
-        update_includes(reducers_file, 
-                REDUCER_IMPORT.format(name=name, file_path=file_path),
-                REDUCER_NEW_LINE.format(path=path, reducer=reducer))
+        submod_create(name, config)
+    dux_file = '%s/state/dux/%s.js' % (values["module_path"], name)
+    write_template(dux_file, DUX_TEMPLATE, values, config) 
+    template_values = get_snippets_for_template(DUX_TEMPLATE, name, values, config)
+    update_dux_imports(dux_file, template_values, config)

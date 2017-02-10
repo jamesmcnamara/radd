@@ -9,7 +9,7 @@ import {{ connect }} from 'react-redux'
 
 // Redux
 import mapStateToProps from '../state/select'
-import {name}Actions from '../state/dux/actions'
+import * as {name}Actions from '../state/dux/actions'
 import mergeActions from 'shared/utils/mergeActions'
 
 // Utils

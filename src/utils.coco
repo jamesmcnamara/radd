@@ -1,6 +1,9 @@
 import os
 import shutil
 
+import snippets
+from constants import DUX_MAIN_FILE, DUX_ACTIONS_FILE
+
 templates_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), '../templates')
 
 get_template_path = os.path.join$(templates_dir)
@@ -16,7 +19,8 @@ def cleaner(f):
 
 def get_template_text(template) = open(get_template_path(template)).read()
 
-def write_template(path, template, context):
+def write_template(path, template, values, config):
+    context = snippets.get_snippets_for_template(template, path, values, config) 
     if not os.path.exists(os.path.dirname(path)):
         os.makedirs(os.path.dirname(path))
     with open(path, 'w') as f:
@@ -48,6 +52,8 @@ def insert_after_last_occurence_of(pred, values, lines) = (
 
 
 def update_includes(filename, new_import, new_line, pattern="export default"):
+    print(filename)
+    print(os.getcwd())
     lines = open(filename).readlines()
     
     if map((line) -> new_line in line, lines) |> any:
@@ -57,21 +63,34 @@ def update_includes(filename, new_import, new_line, pattern="export default"):
     with_import = (lines 
             |> insert_after_last_occurence_of$(
                 (line) -> "import" in line, new_import)
-            )
+    )
 
     with_new_line = (with_import 
-            |> insert_after_last_occurence_of$(
-                (line) -> pattern in line,
-                new_line)
-                )
+        |> insert_after_last_occurence_of$(
+            (line) -> pattern in line,
+            new_line)
+    )
 
     (with_new_line
-            |> open(filename, "w").writelines)
+        |> open(filename, "w").writelines)
 
 
-def update_actions_imports(main_file, name, new_file_path):
+def add_action_import(action_file, new_action):
+    with open(action_file, 'a') as f:
+        f.write("\nexport * from '%s'" % new_action)
+
+def update_dux_imports(new_file, values, config):
+    dux_dir = get_partial_path(new_file, up_to="dux")
+    main_file = os.path.join(dux_dir, DUX_MAIN_FILE)
+    action_file = os.path.join(dux_dir, DUX_ACTIONS_FILE)
+    dux_import = snippets.get_snippet('s_dux_import', values, config)
+    dux_reducer = snippets.get_snippet('s_dux_reducer_new_line', values, config)
+    update_includes(main_file, dux_import, dux_reducer)
+    add_action_import(action_file, new_file)
      
-
+def get_partial_path(path, up_to):
+    dirs = path.split("/")
+    return os.path.join(*dirs[:dirs.index(up_to) + 1])
 
 def find_path(from_file, to_file, root="src"):
     from_dir = os.path.dirname(relative_path(from_file, root))
@@ -94,6 +113,16 @@ def first_matching(xs, x):
             return s
 
 
+def find_path_in_tree(file_name, path="."):
+    file_path = os.path.join(path, file_name)
+    if os.path.exists(file_path):
+        return file_path
+    elif os.path.samefile(path, '/'):
+        raise ValueError('Cannot find {} in current file tree'.format(file_name))
+    else:
+        return find_path_in_tree(file_name, os.path.join(path, '..'))
+
+
 @recursive
 def find_root(root, path="./") = (
     path if root in os.listdir(path) else find_root(root, os.path.join("..", path))
@@ -105,18 +134,22 @@ def touch(path):
 
 def get_dux_file_path(name) = name.replace(".", "/")
 
-def get_module_name(parser):
+def get_module(parser):
     if parser.module_name:
-        return parer.module_name
+        return parser.module_name
+    if parser.cmd == "comp":
+        return None
     else:
-        return input("What module will this be part of?")
+        return input("> What module will this be part of? ")
 
 def get_values_dict(parser):
     values = {}
     values["name"] = parser.name
     values["new_dux_file_path"] = get_dux_file_path(parser.name)
-    values["store_type_path"] = parser.config.get("store_flow_file", "store/types.js")
+    values["store_type_path"] = parser.config.get("store_flow_file", os.path.join(parser.config["store_dir"], "types.js"))
     values["cap_name"] = parser.name[0].capitalize() + parser.name[1:]
-    values["module_name"] = get_module_name(parser)
-    values["module_type"] = "$" + values["module_name"]
-    return parser
+    values["module_full"] = parser.name if parser.cmd in ["start", "comp"] else get_module(parser).replace(".", "/")
+    values["module_name"] = values["module_full"].split("/")[-1]
+    values["module_type"] = "$" + values["module_name"][0].capitalize() + values["module_name"][1:]
+    values["module_path"] = "./%s" % values["module_name"] if parser.cmd in ["start", "comp"] else find_path_in_tree(values["module_full"])
+    return values 

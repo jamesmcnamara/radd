@@ -1,0 +1,1 @@
+import type {{ ${cap_name} }} from '{module_full}/store/dux'

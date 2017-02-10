@@ -1,12 +1,8 @@
-/* @flow */
+{s_flow_header}
 
 import React, {{ Component }} from 'react'
-
-type Props = {{
-
-}}
-
-export default function {name}({{}}: Props) {{
+{s_flow_prop_decl}
+export default function {name}({{}}{s_flow_props_annotation_functional}) {{
   return (
     <div>
     </div>

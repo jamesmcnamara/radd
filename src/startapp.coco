@@ -1,59 +1,68 @@
 import os
 
-from utils import write_template, cleaner, update_includes, relative_path, find_path, touch, 
+from constants import ACTIONS, DUX_COMPONENT, DUX_MAIN, SELECT, STATE, STORE_FLOW_INCLUDE, STORE_FLOW_ANNOTATION, STORE_REDUCER_INCLUDE, STORE_REDUCER_NEWLINE
+from snippets import get_snippets_for_template
+from utils import write_template, cleaner, update_includes, relative_path, find_path, touch
+
+
 
 @cleaner
-def startapp(name):
-    make_component(name)
-    make_redux(name)
-    update_store(name)
-    update_reducer(name)
+def startapp(values, config):
+    make_component(values, config)
+    make_dux(values, config)
+    update_store(values, config)
+    update_reducer(values, config)
 
-def make_component(name):
+def make_component(values, config):
+    name = values["name"]
     fname = .format(name=name)
     "creating components/index" |> print
     os.makedirs('./{name}/components' |> fname)
     main_file = './{name}/components/index.js' |> fname 
     touch(main_file)
-    merge_action_path = find_path(main_file, 'mergeActions') 
-    write_template(main_file, "redux_component", {"name": name, 'merge_action_path': merge_action_path, "cap_name": name.capitalize()})
+    write_template(main_file, DUX_COMPONENT, values, config)
 
 
-def make_redux(name):
+def make_dux(values, config):
+    name = values["name"]
     fname = .format(name=name)
-    os.makedirs('./{name}/redux' |> fname)
-    os.makedirs('./{name}/redux/actions' |> fname)
-    os.makedirs('./{name}/redux/reducers' |> fname)
-    "creating redux/reducers/index" |> print
-    write_template('./{name}/redux/reducers/index.js' |> fname, "mainReducer", {"cap_name": name.capitalize()})
+    os.makedirs('./{name}/state' |> fname)
+    os.makedirs('./{name}/state/dux' |> fname)
+    main_file = './{name}/state/dux/index.js' |> fname
+    "creating %s" % main_file |> print
+    write_template(main_file, DUX_MAIN, values, config)
 
-    "creating redux/select" |> print
-    select_file = './{name}/redux/select.js' |> fname
+    select_file = './{name}/state/select.js' |> fname
+    "creating %s" % select_file |> print
     touch(select_file)
-    store_type_path = find_path(select_file, 'store.flow.js')
-    write_template(select_file, "select", {"name": name, 'store_type_path': store_type_path, "cap_name": name.capitalize() })
+    # store_type_path = find_path(select_file, 'store.flow.js')
+    write_template(select_file, SELECT, values, config)
 
-    "creating redux/state" |> print
-    write_template('./{name}/redux/state.js' |> fname, "state", {"name": name, "cap_name": name.capitalize()})
-    "creating redux/actions/index" |> print
-    write_template('./{name}/redux/actions/index.js' |> fname, "mainAction", {"name": name, "cap_name": name.capitalize()})
+    initial_state = './{name}/state/initialState.js' |> fname
+    "creating %s" % initial_state |> print
+    write_template(initial_state, STATE, values, config)
 
-
-def update_store(name):
-    "updating store.flow" |> print
-    cap_name = name.capitalize()
-    store_file = relative_path("store.flow.js")
-    rel_path = find_path("store.flow.js", "%s/redux/state" % name)
-    new_import = "import type {{ ${cap_name} }} from '{path}'\n".format(cap_name=cap_name, path=rel_path)
-    new_line = "  {name}: ${cap_name},\n".format(name=name, cap_name=cap_name)
-    update_includes(store_file, new_import, new_line, pattern="export type")
+    actions_file = './{name}/state/dux/actions.js' |> fname
+    "creating %s" % actions_file |> print
+    write_template(actions_file, ACTIONS, values, config) 
 
 
-def update_reducer(name): 
-    "updating reducer" |> print
-    reducers_file = relative_path("store/reducers")
-    rel_path = os.path.dirname(find_path("store/reducers", "%s/redux/reducers/index" % name))
-    new_import = "import {name} from '{path}'\n".format(name=name, path=rel_path)
-    new_line = "  {name},\n".format(name=name)
+
+def update_store(values, config):
+    if not config["flow"]:
+        return
+    "updating %s" % config["store_type_path"] |> print
+    new_import = get_snippet(STORE_FLOW_INCLUDE, values, config)
+    new_line = get_snippet(STORE_FLOW_ANNOTATION, values, config) 
+    update_includes(config["store_type_path"], new_import, new_line, pattern="export type")
+
+
+def update_reducer(values, config): 
+    reducers_file = os.path.join(config["store_dir"], "reducers.js")
+    "updating %s" % reducers_file |> print
+    
+    reducer_name = values["name"][0].lower() + values["name"][1:]
+    new_import = "import {reducer_name} from '{module_path}'\n".format(**values, reducer_name=reducer_name)
+    new_line = "  {reducer_name},\n".format(**values, reducer_name=reducer_name)
     update_includes(reducers_file, new_import, new_line)
 

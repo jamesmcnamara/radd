@@ -1,4 +1,4 @@
 
 // Types
-import type {{ ${cap_name} }} from '../initialState'
+import type {{ {module_type} }} from '../initialState'
 
