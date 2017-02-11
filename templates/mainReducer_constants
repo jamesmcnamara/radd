@@ -2,7 +2,6 @@
 {s_create_reducer}
 import * as constants from './constants'
 import state from '../initialState'
-import actions from './actions'
 
 export default createReducer({{
 }}, state)

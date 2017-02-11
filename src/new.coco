@@ -1,14 +1,18 @@
 import os
-from constants import DUX_TEMPLATE
+from constants import DUX_TEMPLATE, DUX_CONSTANTS
 from snippets import get_snippets_for_template
-from utils import write_template, update_dux_imports
+from utils import write_template, update_dux_imports, add_constant
 
 def new(values, config):
-    import pdb; pdb.set_trace()
+    use_constants = config["constants"]
     name = values["name"]
     if "." in name:
         submod_create(name, config)
     dux_file = '%s/state/dux/%s.js' % (values["module_path"], name)
-    write_template(dux_file, DUX_TEMPLATE, values, config) 
-    template_values = get_snippets_for_template(DUX_TEMPLATE, name, values, config)
+    template = DUX_CONSTANTS if use_constants else DUX_TEMPLATE
+    write_template(dux_file, template, values, config) 
+    template_values = get_snippets_for_template(template, name, values, config)
     update_dux_imports(dux_file, template_values, config)
+    if use_constants:
+        constants_file = '%s/state/dux/constants.js' % values["module_path"]
+        add_constant(constants_file, values, config)

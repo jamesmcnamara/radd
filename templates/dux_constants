@@ -4,13 +4,13 @@ import {{{upper_name}}} from './constants'
 
 // Actions
 export const {name} = (payload) => (
-  {
+  {{
     type: {upper_name},
     payload,
-  }
+  }}
 )
 
 // Reducer
-export default (state{s_flow_module_type_param}) => ({{
+export default (state{s_flow_module_type_param}, payload) => ({{
   ...state
 }});
