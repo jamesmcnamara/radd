@@ -5,9 +5,11 @@ DUX_ACTIONS_FILE = 'actions.js'
 
 # Templates
 ACTIONS = 'actions'
+CONSTANTS = 'constants'
 DUX_TEMPLATE = 'dux'
 DUX_COMPONENT = 'dux_component'
 DUX_MAIN = 'dux_main'
+DUX_MAIN_CONSTANTS = 'mainReducer_constants'
 SELECT = 'select'
 STATE = 'state'
 
@@ -16,3 +18,4 @@ STORE_FLOW_INCLUDE = 's_flow_store_state_type_import'
 STORE_FLOW_ANNOTATION = 's_flow_store_shape_annotation'
 STORE_REDUCER_INCLUDE = 's_store_reducer_import'
 STORE_REDUCER_NEWLINE = 's_store_reducer_newline'
+STORE_REDUCER_NEWLINE_CONSTANTS = 's_store_reducer_newline_constants'

@@ -1,6 +1,6 @@
 import os
 
-from constants import ACTIONS, DUX_COMPONENT, DUX_MAIN, SELECT, STATE, STORE_FLOW_INCLUDE, STORE_FLOW_ANNOTATION, STORE_REDUCER_INCLUDE, STORE_REDUCER_NEWLINE
+from constants import *
 from snippets import get_snippets_for_template
 from utils import write_template, cleaner, update_includes, relative_path, find_path, touch
 
@@ -24,13 +24,14 @@ def make_component(values, config):
 
 
 def make_dux(values, config):
+    use_constants = config["constants"]
     name = values["name"]
     fname = .format(name=name)
     os.makedirs('./{name}/state' |> fname)
     os.makedirs('./{name}/state/dux' |> fname)
     main_file = './{name}/state/dux/index.js' |> fname
     "creating %s" % main_file |> print
-    write_template(main_file, DUX_MAIN, values, config)
+    write_template(main_file, DUX_MAIN_CONSTANTS if use_constants else DUX_MAIN, values, config)
 
     select_file = './{name}/state/select.js' |> fname
     "creating %s" % select_file |> print
@@ -45,6 +46,12 @@ def make_dux(values, config):
     actions_file = './{name}/state/dux/actions.js' |> fname
     "creating %s" % actions_file |> print
     write_template(actions_file, ACTIONS, values, config) 
+
+    if use_constants:
+        constants_file = './{name}/state/dux/constants.js' |> fname
+        "creating %s" % constants_file |> print
+        write_template(constants_file, CONSTANTS, values, config) 
+        
 
 
 

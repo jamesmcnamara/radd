@@ -10,12 +10,11 @@ import {{ connect }} from 'react-redux'
 // Redux
 import mapStateToProps from '../state/select'
 import * as {name}Actions from '../state/dux/actions'
-import mergeActions from 'shared/utils/mergeActions'
 
 // Utils
 {s_flow_types_import}
 {s_flow_prop_decl}
-export default connect(mapStateToProps, {name}Actions, mergeActions)
+export default connect(mapStateToProps)
 (class {cap_name} extends Component {{
   {s_flow_props_annotation}
   render() {{

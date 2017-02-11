@@ -1,7 +1,4 @@
 {s_flow_header}
-
-export type ${cap_name} = {{
-}}
-
+{s_flow_state_type}
 export default {{
 }}
