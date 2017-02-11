@@ -1,0 +1,16 @@
+{s_flow_header}
+import {{{upper_name}}} from './constants'
+{s_flow_dux_types_import}
+
+// Actions
+export const {name} = (payload) => (
+  {
+    type: {upper_name},
+    payload,
+  }
+)
+
+// Reducer
+export default (state{s_flow_module_type_param}) => ({{
+  ...state
+}});

@@ -1,0 +1,1 @@
+export const {upper_name} = `${{BASE_NAME}}/{name}`
