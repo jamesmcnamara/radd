@@ -77,7 +77,7 @@ def update_includes(filename, new_import, new_line, pattern="export default"):
 
 def add_action_import(action_file, new_action):
     with open(action_file, 'a') as f:
-        f.write("\nexport * from '%s'" % new_action)
+        f.write("\nexport * from './%s'" % new_action)
 
 def update_dux_imports(new_file, values, config):
     dux_dir = get_partial_path(new_file, up_to="dux")
@@ -86,7 +86,7 @@ def update_dux_imports(new_file, values, config):
     dux_import = snippets.get_snippet('s_dux_import', values, config)
     dux_reducer = snippets.get_snippet('s_dux_reducer_new_line', values, config)
     update_includes(main_file, dux_import, dux_reducer)
-    add_action_import(action_file, new_file)
+    add_action_import(action_file, values["name"])
      
 def get_partial_path(path, up_to):
     dirs = path.split("/")

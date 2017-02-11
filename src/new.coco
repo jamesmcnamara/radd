@@ -4,6 +4,7 @@ from snippets import get_snippets_for_template
 from utils import write_template, update_dux_imports
 
 def new(values, config):
+    import pdb; pdb.set_trace()
     name = values["name"]
     if "." in name:
         submod_create(name, config)
