@@ -107,6 +107,13 @@ def relative_path(name, root="src"):
             return os.path.join(dirpath, matching_file)
 
 
+def get_store_to_module_path(parser, values):
+    if parser.cmd != "start":
+        return None
+    dux = os.path.join(values["module_path"], "state/dux")
+    return os.path.relpath(dux, parser.config["store_dir"])
+
+
 def first_matching(xs, x):
     for s in xs: 
         if x in s:
@@ -152,4 +159,5 @@ def get_values_dict(parser):
     values["module_name"] = values["module_full"].split("/")[-1]
     values["module_type"] = "$" + values["module_name"][0].capitalize() + values["module_name"][1:]
     values["module_path"] = "./%s" % values["module_name"] if parser.cmd in ["start", "comp"] else find_path_in_tree(values["module_full"])
+    values["store_to_module_path"] = get_store_to_module_path(parser, values)
     return values 

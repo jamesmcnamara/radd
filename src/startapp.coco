@@ -58,11 +58,11 @@ def update_store(values, config):
 
 
 def update_reducer(values, config): 
-    reducers_file = os.path.join(config["store_dir"], "reducers.js")
+    reducers_file = os.path.join(config["store_dir"], config["reducers_file"])
     "updating %s" % reducers_file |> print
     
     reducer_name = values["name"][0].lower() + values["name"][1:]
-    new_import = "import {reducer_name} from '{module_path}'\n".format(**values, reducer_name=reducer_name)
+    new_import = "import {reducer_name} from '{store_to_module_path}'\n".format(**values, reducer_name=reducer_name)
     new_line = "  {reducer_name},\n".format(**values, reducer_name=reducer_name)
     update_includes(reducers_file, new_import, new_line)
 

@@ -13,6 +13,8 @@ def fill_defaults(file_name, config):
         config["project_root"] = os.path.join(os.path.dirname(file_name), config["project_root"])
     if not config.get("store_dir"):
         config["store_dir"] = os.path.join(config["project_root"],  "store")
+    if not config.get("reducers_file"):
+        config["reducers_file"] = "reducers.js"
     return config
 
 def get_config(file_name):
